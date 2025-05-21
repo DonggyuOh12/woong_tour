@@ -6,8 +6,36 @@
     <link rel="stylesheet" href="css/globals.css" />
     <link rel="stylesheet" href="css/styleguide.css" />
     <link rel="stylesheet" href="css/style.css" />
+    <style>
+      /* 로그인 버튼 스타일 */
+      .login-btn-container {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 100;
+      }
+      .login-btn {
+        background-color: #1a73e8;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+      }
+      .login-btn:hover {
+        background-color: #1765cc;
+      }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   </head>
   <body>
+    <!-- 로그인 버튼 -->
+    <div class="login-btn-container">
+      <button id="show-login-btn" class="login-btn">로그인</button>
+    </div>
+
     <div class="frame">
       <div class="div">
         <div class="div-2">
@@ -171,5 +199,44 @@
         </div>
       </div>
     </div>
+
+    <script>
+      // 로컬 스토리지에서 사용자 정보 확인
+      window.onload = function() {
+        const userData = localStorage.getItem('googleUserData');
+        if (userData) {
+          const user = JSON.parse(userData);
+          document.getElementById('show-login-btn').textContent = user.name;
+        }
+      };
+
+      // 로그인 버튼 클릭 시 로그인 페이지로 이동
+      document.getElementById('show-login-btn').addEventListener('click', function() {
+        // 로그인 페이지를 팝업창으로 열기
+        const width = 500;
+        const height = 600;
+        const left = (window.innerWidth - width) / 2;
+        const top = (window.innerHeight - height) / 2;
+
+        window.open('login.html', '구글 로그인',
+          `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes,status=yes`);
+      });
+
+      // 로그인 페이지에서 메시지 수신
+      window.addEventListener('message', function(event) {
+        // 보안을 위해 출처 확인 (실제 서비스에서는 도메인 확인이 필요)
+
+        // 로그인 성공 메시지인 경우
+        if (event.data.type === 'login-success') {
+          const user = event.data.user;
+          document.getElementById('show-login-btn').textContent = user.name;
+        }
+
+        // 로그아웃 메시지인 경우
+        if (event.data.type === 'logout') {
+          document.getElementById('show-login-btn').textContent = '로그인';
+        }
+      });
+    </script>
   </body>
 </html>
