@@ -36,6 +36,126 @@ background-color: #1765cc;
   padding-bottom: 60px; /* 하단 메뉴 높이만큼 여백 추가 */
 }
 
+/* 오늘의 기록 */
+.record-card {
+  width: 100%;
+  max-width: 375px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 16px;
+  font-family: sans-serif;
+}
+
+.record-card h2 {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.record-summary {
+  margin-top: 12px;
+}
+
+.steps {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.progress-bar {
+  background: #e0e0e0;
+  height: 8px;
+  border-radius: 4px;
+  margin: 8px 0;
+}
+
+.progress-bar .progress {
+  background: #49a6f0;
+  height: 100%;
+  border-radius: 4px;
+}
+
+.summary-stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #666;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 16px 0;
+}
+
+.daily-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.daily-header h3 {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.toggle-btn img {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s ease;
+}
+
+.toggle-btn img.rotated {
+  transform: rotate(180deg);
+}
+
+.daily-missions {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.daily-missions.open {
+  max-height: 500px; /* 충분히 큰 값 */
+}
+
+.daily-missions ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 8px;
+}
+
+.daily-missions li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.daily-missions .done {
+  background: #d0d0d0;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.daily-missions .done.active {
+  background: #49a6f0;
+}
+
+
+
+/* 오늘의 기록 끝 */
+
 .frame .div-2 {
   position: absolute;
   width: 375px;

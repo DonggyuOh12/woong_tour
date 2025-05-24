@@ -14,20 +14,60 @@
       <button id="show-login-btn" class="login-btn">로그인</button>
     </div>
 
+    <!-- 메인 화면 -->
     <div class="frame">
       <div class="div">
-        <div class="div-2">
-          <div class="text-wrapper">00:00</div>
-          <div class="div-3">
-            <img class="img" src="img/ant-design-signal-filled.svg" />
-            <img class="img" src="img/material-symbols-wifi-rounded.svg" />
-            <div class="img"><img class="group" src="img/group-2.png" /></div>
-          </div>
-        </div>
+<!--        <div class="div-2">-->
+<!--          <div class="text-wrapper">00:00</div>-->
+<!--          <div class="div-3">-->
+<!--            <img class="img" src="img/ant-design-signal-filled.svg" />-->
+<!--            <img class="img" src="img/material-symbols-wifi-rounded.svg" />-->
+<!--            <div class="img"><img class="group" src="img/group-2.png" /></div>-->
+<!--          </div>-->
+<!--        </div>-->
         <div class="div-4">
           <div class="div-5">
-            <div class="text-wrapper-2">오늘의 기록</div>
-            <img class="group-2" src="img/group-23950.png" />
+<!--            <div class="text-wrapper-2">오늘의 기록</div>-->
+<!--            <img class="group-2" src="img/group-23950.png" />-->
+            <div class="record-card">
+              <div class="record-header">
+                <h2>오늘의 기록</h2>
+              </div>
+
+              <div class="record-summary">
+                <div class="steps">
+                  <span class="number">8,000</span> 걸음
+                </div>
+                <div class="progress-bar">
+                  <div class="progress" style="width: 70%;"></div>
+                </div>
+                <div class="summary-stats">
+                  <span>거리 <strong>7km</strong></span>
+                  <span>칼로리 <strong>320kcal</strong></span>
+                </div>
+              </div>
+
+              <hr class="divider" />
+
+              <div class="daily-header">
+                <h3>일일 미션</h3>
+                <button class="toggle-btn">
+
+                  <img src="img/chevron-down.svg" alt="펼치기" />
+                </button>
+              </div>
+
+              <div class="daily-missions">
+                <ul>
+                  <li><span>1,000 걸음 걷기</span> <button class="done">완료</button></li>
+                  <li><span>10,000 걸음 걷기</span> <button class="done">완료</button></li>
+                  <li><span>스탬프 루트 만들기</span> <button class="done">완료</button></li>
+                  <li><span>카드 만들기</span> <button class="done">완료</button></li>
+                  <li><span>새로운 장소 방문하기</span> <button class="done">완료</button></li>
+                </ul>
+              </div>
+            </div>
+            <!--     여기까지 />-->
           </div>
           <div class="div-5">
             <div class="div-6">
@@ -169,7 +209,7 @@
             </div>
             <div class="group-10">
               <div class="div-20">
-                <div class="icon-park-solid"><img class="group-13" src="img/group.png" /></div>
+                <div class="icon-park-solid"><img class="group-13" src="img/icon-park-solid_people-top.png" /></div>
                 <div class="text-wrapper-13">마이</div>
               </div>
             </div>
@@ -214,6 +254,16 @@
         if (event.data.type === 'logout') {
           document.getElementById('show-login-btn').textContent = '로그인';
         }
+      });
+
+
+      // 토글 버튼 클릭 시 일일 미션 보이기/숨기기
+      document.querySelector('.toggle-btn').addEventListener('click', function() {
+        const missions = document.querySelector('.daily-missions');
+        missions.classList.toggle('open');
+
+        // 화살표 아이콘 회전
+        this.querySelector('img').classList.toggle('rotated');
       });
     </script>
   </body>
