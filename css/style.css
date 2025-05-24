@@ -1,3 +1,24 @@
+/* 로그인 버튼 스타일 */
+.login-btn-container {
+position: absolute;
+top: 10px;
+right: 10px;
+z-index: 100;
+}
+.login-btn {
+background-color: #1a73e8;
+color: white;
+border: none;
+padding: 8px 15px;
+border-radius: 4px;
+cursor: pointer;
+font-size: 14px;
+font-weight: 500;
+}
+.login-btn:hover {
+background-color: #1765cc;
+}
+
 .frame {
   background-color: #ffffff;
   display: flex;
@@ -12,6 +33,7 @@
   width: 375px;
   height: 1397px;
   position: relative;
+  padding-bottom: 60px; /* 하단 메뉴 높이만큼 여백 추가 */
 }
 
 .frame .div-2 {
@@ -549,12 +571,17 @@
 }
 
 .frame .group-9 {
-  position: absolute;
-  width: 375px;
-  height: 64px;
-  top: 1333px;
+  position: fixed;
+  bottom: 0;
   left: 0;
-  background-color: #ffffff;
+  width: 100%;
+  background-color: white; /* 필요에 따라 색상 추가 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 0;
+  z-index: 100; /* 다른 요소 위에 보이도록 */
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* 선택사항 */
 }
 
 .frame .div-19 {
