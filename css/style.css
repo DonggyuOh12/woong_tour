@@ -975,7 +975,7 @@
 
 @media (max-width: 360px) {
   .frame {
-    padding: 140px;
+    padding-top: 140px;
   }
 
   .frame .text-wrapper-4 {
