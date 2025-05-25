@@ -36,7 +36,7 @@
 /* 로그인 버튼 컨테이너 */
 .login-btn-container {
   position: absolute;
-  top: 10px;
+  top: 50px;
   right: 18px; /* 여백 고려하여 조정 */
   z-index: 100;
 }
@@ -74,6 +74,7 @@
   position: absolute;
   top: 40px;
   left: 0;
+  z-index: 101;
   background-color: #ffffff;
   box-sizing: border-box;
 }
@@ -116,10 +117,11 @@
   font-family: "Pretendard-Bold", Helvetica;
   font-weight: 700;
   color: #222222;
-  font-size: 30px;
+  font-size: 20px;
   letter-spacing: 0;
   line-height: 24px;
   white-space: nowrap;
+  z-index: 102;
 }
 
 /* 우측 아이콘 그룹 (검색, 알림) */
