@@ -180,7 +180,7 @@
   width: 100%;
   align-items: flex-start;
   gap: 40px;
-  padding-top: 140px;  /* 대신 padding-top으로 헤더 높이만큼 공간 확보 */
+  padding: 140px 16px 0;  /* 대신 padding-top으로 헤더 높이만큼 공간 확보 */
   box-sizing: border-box;
 }
 
@@ -975,7 +975,7 @@
 
 @media (max-width: 360px) {
   .frame {
-    padding: 0 4px;
+    padding: 140px 4px;
   }
 
   .frame .text-wrapper-4 {
@@ -984,7 +984,7 @@
   }
 
   .frame .div-4 {
-    padding: 140px;
+    padding: 140px 12px;
   }
 }
 
@@ -994,7 +994,7 @@
   }
 
   .frame .div-4 {
-    padding: 140px;
+    padding: 140px 20px;
   }
 
   .frame .div-16,
