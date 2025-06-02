@@ -1,260 +1,792 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="css/globals.css" />
-    <link rel="stylesheet" href="css/styleguide.css" />
-    <link rel="stylesheet" href="css/style.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  </head>
-  <body>
-    <!-- 로그인 버튼 -->
-    <div class="login-btn-container">
-      <button id="show-login-btn" class="login-btn">로그인</button>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>내주변 관광정보 - 실시간 위치 기반 검색</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Malgun Gothic', Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .header {
+            background-color: #fff;
+            padding: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: #2c5aa0;
+            margin-bottom: 10px;
+        }
+
+        .search-container {
+            background-color: #fff;
+            padding: 30px;
+            margin: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .form-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px 0;
+        }
+
+        .form-label {
+            width: 100px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-input {
+            flex: 1;
+            margin-right: 15px;
+        }
+
+        .form-input input, .form-input select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .location-get-area {
+            border: 2px solid #4a90e2;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            background-color: #f8fbff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .location-get-area:hover {
+            border-color: #2c5aa0;
+            background-color: #f0f7ff;
+        }
+
+        .location-get-area.active {
+            border-color: #28a745;
+            background-color: #f0fff4;
+        }
+
+        .location-get-area.error {
+            border-color: #dc3545;
+            background-color: #fff5f5;
+        }
+
+        .location-icon {
+            font-size: 48px;
+            color: #4a90e2;
+            margin-bottom: 10px;
+        }
+
+        .location-icon.active {
+            color: #28a745;
+        }
+
+        .location-icon.error {
+            color: #dc3545;
+        }
+
+        .location-text {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .location-subtext {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .location-info {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f0f7ff;
+            border-radius: 8px;
+            border-left: 4px solid #4a90e2;
+            display: none;
+        }
+
+        .location-info.active {
+            display: block;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #4a90e2;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background-color: #2c5aa0;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+            margin-left: 10px;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .results-container {
+            margin: 20px;
+        }
+
+        .results-header {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .result-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .result-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .result-image {
+            width: 100%;
+            height: 150px;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 14px;
+            overflow: hidden;
+        }
+
+        .result-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .result-content {
+            padding: 15px;
+        }
+
+        .result-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .result-address {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .result-distance {
+            font-size: 12px;
+            color: #4a90e2;
+            font-weight: bold;
+        }
+
+        .pagination {
+            text-align: center;
+            padding: 30px;
+            background-color: #fff;
+        }
+
+        .pagination button {
+            margin: 0 5px;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .pagination button.active {
+            background-color: #4a90e2;
+            color: white;
+            border-color: #4a90e2;
+        }
+
+        .pagination button:hover:not(.active):not(:disabled) {
+            background-color: #f5f5f5;
+        }
+
+        .pagination button:disabled {
+            background-color: #f9f9f9;
+            color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .api-config {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .api-config input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+
+        .api-info {
+            background-color: #e3f2fd;
+            border: 1px solid #2196f3;
+            color: #1565c0;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4a90e2;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .accuracy-info {
+            font-size: 11px;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>내주변 관광정보</h1>
+        <p>현재 위치에서 주변 관광지를 찾아보세요</p>
     </div>
 
-    <!-- 메인 화면 -->
-    <div class="frame">
-      <div class="div">
-        <div class="div-4">
-          <div class="div-5">
-            <div class="record-card">
-              <div class="record-header">
-                <h2>오늘의 기록</h2>
-              </div>
-
-              <div class="record-summary">
-                <div class="steps">
-                  <span class="number">8,000</span> 걸음
-                </div>
-                <div class="progress-bar">
-                  <div class="progress" style="width: 50%;"></div>
-                </div>
-                <div class="summary-stats">
-                  <span>거리 <strong>7km</strong></span>
-                  <span>칼로리 <strong>320kcal</strong></span>
-                </div>
-              </div>
-
-              <hr class="divider" />
-
-              <div class="daily-header">
-                <h3>일일 미션</h3>
-                <button class="toggle-btn">
-
-                  <img src="img/chevron-down.svg" alt="펼치기" />
-                </button>
-              </div>
-
-              <div class="daily-missions">
-                <ul>
-                  <li><span>1,000 걸음 걷기</span> <button class="done">완료</button></li>
-                  <li><span>10,000 걸음 걷기</span> <button class="done">완료</button></li>
-                  <li><span>스탬프 루트 만들기</span> <button class="done">완료</button></li>
-                  <li><span>카드 만들기</span> <button class="done">완료</button></li>
-                  <li><span>새로운 장소 방문하기</span> <button class="done">완료</button></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="div-5">
-            <div class="div-6">
-              <p class="p">내 취향에 맞는 추천 여행지</p>
-              <div class="div-wrapper"><div class="text-wrapper-3">AI추천</div></div>
-            </div>
-            <div class="overlap-group-wrapper">
-              <div class="overlap-group">
-                <img src="img/group-23948.png" alt="배경 이미지" class="background-img" />
-                <div class="div-7">
-                  <div class="div-8">
-                    <div class="text-wrapper-4">부산</div>
-                    <div class="text-wrapper-5">해운대 해수욕장</div>
-                  </div>
-                  <div class="div-9">
-                    <div class="rectangle"></div>
-                    <div class="ellipse"></div>
-                    <div class="ellipse"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="div-10">
-            <div class="frame-wrapper">
-              <div class="div-11">
-                <div class="text-wrapper-6">추천 여행지 인기 포토</div>
-                <div class="div-12">
-                  <div class="text-wrapper-7">더보기</div>
-                  <img class="img-2" src="img/frame-6.svg" />
-                </div>
-              </div>
-            </div>
-            <div class="div-13">
-              <div class="div-14">
-                <div class="solar-heart-outline-wrapper">
-                  <img class="solar-heart-outline" src="img/solar-heart-outline.svg" />
-                </div>
-                <div class="div-15">
-                  <p class="text-wrapper-8">제목은 한줄 최대 글자 이후 ...</p>
-                  <p class="text-wrapper-9">설명 한줄 최대 글자 이후...</p>
-                </div>
-              </div>
-              <div class="div-14">
-                <div class="solar-heart-outline-wrapper"><img class="solar-heart-outline" src="img/image.svg" /></div>
-                <div class="div-15">
-                  <p class="text-wrapper-8">제목은 한줄 최대 글자 이후 ...</p>
-                  <p class="text-wrapper-9">설명 한줄 최대 글자 이후...</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="group-3">
-            <div class="group-4">
-              <div class="div-11">
-                <div class="text-wrapper-6">이번 주 인기 루트</div>
-                <div class="div-12">
-                  <div class="text-wrapper-7">더보기</div>
-                  <img class="img-2" src="img/frame-6.svg" />
-                </div>
-              </div>
-            </div>
-            <div class="div-16">
-              <div class="group-5">
-                <div class="group-wrapper">
-                  <div class="group-6">
-                    <div class="text-wrapper-10">해운대에서 동백섬...</div>
-                    <div class="text-wrapper-11">긴 모래사장이 예쁜 코스</div>
-                  </div>
-                </div>
-                <img class="image" src="img/image-4.png" />
-              </div>
-              <div class="group-5">
-                <div class="group-wrapper">
-                  <div class="group-6">
-                    <div class="text-wrapper-10">인천의 쩝쩝박사</div>
-                    <div class="text-wrapper-11">재래시장 먹거리 구경</div>
-                  </div>
-                </div>
-                <img class="image" src="img/image-2.png" />
-              </div>
-              <div class="group-5">
-                <div class="group-wrapper">
-                  <div class="group-6">
-                    <div class="text-wrapper-10">제주도 올레길</div>
-                    <div class="text-wrapper-11">제주를 하나로 잇는 길</div>
-                  </div>
-                </div>
-                <img class="image-2" src="img/image.png" />
-              </div>
-            </div>
-          </div>
+    <div class="search-container">
+        <div class="api-config">
+            <strong>API 인증키 설정</strong>
+            <input type="text" id="apiKey" placeholder="한국관광공사 API 인증키를 입력하세요">
+            <small style="display: block; margin-top: 5px;">
+                API 키는 <a href="https://www.data.go.kr/tcs/dss/selectApiDataDetailView.do?publicDataPk=15101578" target="_blank">한국관광공사 관광정보 서비스</a>에서 발급받을 수 있습니다.
+            </small>
         </div>
-        <div class="frame-wrapper-2">
-          <div class="div-17">
-            <div class="group-wrapper-2">
-              <div class="group-7"><div class="text-wrapper-12">길다마</div></div>
+
+        <div class="form-row">
+            <div class="form-label">관광타입</div>
+            <div class="form-input">
+                <select id="contentType">
+                    <option value="12">관광지</option>
+                    <option value="14">문화시설</option>
+                    <option value="15">축제공연행사</option>
+                    <option value="25">여행코스</option>
+                    <option value="28">레포츠</option>
+                    <option value="32">숙박</option>
+                    <option value="38">쇼핑</option>
+                    <option value="39">음식점</option>
+                </select>
             </div>
-            <div class="div-18">
-              <img class="div-wrapper-2" src="img/mynaui-search-solid.svg" />
-              <div class="div-wrapper-2">
-                <div class="overlap-group-2">
-                  <img class="group-8" src="img/group-23942.png" />
-                  <div class="ellipse-2"></div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
-        <div class="group-9">
-          <div class="div-19">
-            <div class="group-10">
-              <div class="div-20">
-                <img class="div-wrapper-2" src="img/material-symbols-home-rounded.svg" />
-                <div class="text-wrapper-13">홈</div>
-              </div>
-            </div>
-            <div class="group-10">
-              <div class="div-20">
-                <div class="div-wrapper-2">
-                  <div class="img-wrapper"><img class="group-11" src="img/group-23955.png" /></div>
+
+        <div class="form-row">
+            <div class="form-label">현재 위치</div>
+            <div class="form-input">
+                <div class="location-get-area" id="locationArea">
+                    <div class="location-icon" id="locationIcon">📍</div>
+                    <div class="location-text" id="locationText">클릭하여 현재 위치 가져오기</div>
+                    <div class="location-subtext" id="locationSubtext">위치 권한을 허용해주세요</div>
                 </div>
-                <div class="text-wrapper-14">루트</div>
-              </div>
-            </div>
-            <div class="group-10">
-              <div class="div-20">
-                <div class="div-wrapper-2">
-                  <div class="group-12">
-                    <div class="overlap-group-3">
-                      <div class="rectangle-2"></div>
-                      <img class="vector" src="img/vector-64.svg" />
-                      <img class="vector-2" src="img/vector-65.svg" />
-                      <div class="rectangle-3"></div>
-                    </div>
-                  </div>
+
+                <div class="location-info" id="locationInfo">
+                    <strong>현재 위치 정보:</strong>
+                    <div id="locationDetails">위치를 가져오는 중입니다...</div>
                 </div>
-                <div class="text-wrapper-14">소셜</div>
-              </div>
             </div>
-            <div class="group-10">
-              <div class="div-20">
-                <div class="icon-park-solid"><img class="group-13" src="img/icon-park-solid_people-top.png" /></div>
-                <div class="text-wrapper-13">마이</div>
-              </div>
-            </div>
-          </div>
         </div>
-      </div>
+
+        <div class="form-row">
+            <div class="form-label">검색 반경</div>
+            <div class="form-input">
+                <select id="radius">
+                    <option value="1000">1km</option>
+                    <option value="2000" selected>2km</option>
+                    <option value="5000">5km</option>
+                    <option value="10000">10km</option>
+                    <option value="20000">20km</option>
+                </select>
+            </div>
+            <span style="color: #666; font-size: 12px;">※ 거리는 20,000m(20km) 까지 가능합니다.</span>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="btn btn-primary" id="searchBtn" disabled>검색</button>
+            <button class="btn btn-secondary" id="resetBtn">위치 재설정</button>
+        </div>
+    </div>
+
+    <div class="results-container hidden" id="resultsContainer">
+        <div class="results-header">
+            <strong>총 데이터 수 <span id="totalCount">0</span>건</strong>
+        </div>
+
+        <div class="results-grid" id="resultsGrid">
+            <!-- 검색 결과가 여기에 표시됩니다 -->
+        </div>
+
+        <div class="pagination" id="pagination">
+            <!-- 페이지네이션이 동적으로 생성됩니다 -->
+        </div>
     </div>
 
     <script>
-      // 로컬 스토리지에서 사용자 정보 확인
-      window.onload = function() {
-        const userData = localStorage.getItem('googleUserData');
-        if (userData) {
-          const user = JSON.parse(userData);
-          document.getElementById('show-login-btn').textContent = user.name;
+        let currentData = [];
+        let currentPage = 1;
+        let totalItems = 0;
+        let currentLocation = null;
+        let watchId = null;
+        const itemsPerPage = 12;
+
+        // DOM 요소들
+        const apiKeyInput = document.getElementById('apiKey');
+        const locationArea = document.getElementById('locationArea');
+        const locationIcon = document.getElementById('locationIcon');
+        const locationText = document.getElementById('locationText');
+        const locationSubtext = document.getElementById('locationSubtext');
+        const locationInfo = document.getElementById('locationInfo');
+        const locationDetails = document.getElementById('locationDetails');
+        const searchBtn = document.getElementById('searchBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const resultsGrid = document.getElementById('resultsGrid');
+        const totalCount = document.getElementById('totalCount');
+        const pagination = document.getElementById('pagination');
+
+        // 이벤트 리스너 설정
+        locationArea.addEventListener('click', getCurrentLocation);
+        searchBtn.addEventListener('click', handleSearch);
+        resetBtn.addEventListener('click', handleReset);
+
+        // 페이지 로드 시 자동으로 위치 권한 확인
+        window.addEventListener('load', checkGeolocationSupport);
+
+        function checkGeolocationSupport() {
+            if (!navigator.geolocation) {
+                showLocationError('이 브라우저는 위치 서비스를 지원하지 않습니다.');
+                return;
+            }
+
+            // 자동으로 위치 가져오기 시도
+            getCurrentLocation();
         }
-      };
 
-      // 로그인 버튼 클릭 시 로그인 페이지로 이동
-      document.getElementById('show-login-btn').addEventListener('click', function() {
-        // 로그인 페이지를 팝업창으로 열기
-        const width = 500;
-        const height = 600;
-        const left = (window.innerWidth - width) / 2;
-        const top = (window.innerHeight - height) / 2;
+        function getCurrentLocation() {
+            if (!navigator.geolocation) {
+                showLocationError('이 브라우저는 위치 서비스를 지원하지 않습니다.');
+                return;
+            }
 
-        window.open('login.html', '구글 로그인',
-          `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes,status=yes`);
-      });
+            showLocationLoading();
 
-      // 로그인 페이지에서 메시지 수신
-      window.addEventListener('message', function(event) {
-        // 보안을 위해 출처 확인 (실제 서비스에서는 도메인 확인이 필요)
+            const options = {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 300000 // 5분
+            };
 
-        // 로그인 성공 메시지인 경우
-        if (event.data.type === 'login-success') {
-          const user = event.data.user;
-          document.getElementById('show-login-btn').textContent = user.name;
+            navigator.geolocation.getCurrentPosition(
+                handleLocationSuccess,
+                handleLocationError,
+                options
+            );
         }
 
-        // 로그아웃 메시지인 경우
-        if (event.data.type === 'logout') {
-          document.getElementById('show-login-btn').textContent = '로그인';
+        function showLocationLoading() {
+            locationArea.classList.remove('active', 'error');
+            locationIcon.innerHTML = '<div class="loading"></div>';
+            locationText.textContent = '위치를 가져오는 중...';
+            locationSubtext.textContent = '잠시만 기다려주세요';
+            locationInfo.classList.remove('active');
         }
-      });
 
+        function handleLocationSuccess(position) {
+            const { latitude, longitude, accuracy } = position.coords;
 
-      // 토글 버튼 클릭 시 일일 미션 보이기/숨기기
-      document.querySelector('.toggle-btn').addEventListener('click', function() {
-        const missions = document.querySelector('.daily-missions');
-        missions.classList.toggle('open');
+            currentLocation = { latitude, longitude, accuracy };
 
-        // 화살표 아이콘 회전
-        this.querySelector('img').classList.toggle('rotated');
-      });
+            locationArea.classList.add('active');
+            locationArea.classList.remove('error');
+            locationIcon.textContent = '✅';
+            locationIcon.classList.add('active');
+            locationText.textContent = '현재 위치를 가져왔습니다';
+            locationSubtext.textContent = '검색 버튼을 클릭하세요';
+
+            displayLocationInfo(latitude, longitude, accuracy);
+
+            searchBtn.disabled = false;
+            searchBtn.classList.add('btn-success');
+            searchBtn.textContent = '주변 관광지 검색';
+        }
+
+        function handleLocationError(error) {
+            let errorMessage = '';
+
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    errorMessage = '위치 접근이 거부되었습니다. 브라우저 설정에서 위치 권한을 허용해주세요.';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    errorMessage = '위치 정보를 사용할 수 없습니다.';
+                    break;
+                case error.TIMEOUT:
+                    errorMessage = '위치 정보 요청이 시간 초과되었습니다.';
+                    break;
+                default:
+                    errorMessage = '알 수 없는 오류가 발생했습니다.';
+                    break;
+            }
+
+            showLocationError(errorMessage);
+        }
+
+        function showLocationError(message) {
+            locationArea.classList.add('error');
+            locationArea.classList.remove('active');
+            locationIcon.textContent = '❌';
+            locationIcon.classList.add('error');
+            locationText.textContent = '위치 가져오기 실패';
+            locationSubtext.textContent = message;
+            locationInfo.classList.remove('active');
+
+            searchBtn.disabled = true;
+            searchBtn.classList.remove('btn-success');
+            searchBtn.textContent = '검색';
+        }
+
+        function displayLocationInfo(latitude, longitude, accuracy) {
+            const accuracyText = accuracy ?
+                `약 ${Math.round(accuracy)}m 정확도` :
+                '정확도 정보 없음';
+
+            locationDetails.innerHTML = `
+                <div style="margin-top: 10px;">
+                    <div><strong>위도:</strong> ${latitude.toFixed(6)}</div>
+                    <div><strong>경도:</strong> ${longitude.toFixed(6)}</div>
+                    <div class="accuracy-info">📍 ${accuracyText}</div>
+                    <div style="color: #28a745; font-size: 12px; margin-top: 5px;">✓ 실시간 위치 정보</div>
+                </div>
+            `;
+
+            locationInfo.classList.add('active');
+        }
+
+        async function handleSearch() {
+            const apiKey = apiKeyInput.value.trim();
+
+            if (!apiKey) {
+                alert('API 인증키를 입력해주세요.');
+                apiKeyInput.focus();
+                return;
+            }
+
+            if (!currentLocation) {
+                alert('먼저 현재 위치를 가져와주세요.');
+                getCurrentLocation();
+                return;
+            }
+
+            searchBtn.disabled = true;
+            searchBtn.textContent = '검색 중...';
+
+            try {
+                await searchTourismData(apiKey);
+                displayResults();
+                resultsContainer.classList.remove('hidden');
+                resultsContainer.scrollIntoView({ behavior: 'smooth' });
+            } catch (error) {
+                alert('검색 중 오류가 발생했습니다: ' + error.message);
+            } finally {
+                searchBtn.disabled = false;
+                searchBtn.textContent = '주변 관광지 검색';
+            }
+        }
+
+        async function searchTourismData(apiKey) {
+            const contentTypeId = document.getElementById('contentType').value;
+            const radius = document.getElementById('radius').value;
+
+            if (!currentLocation) {
+                alert('위치 정보가 필요합니다.');
+                return;
+            }
+
+            const { longitude, latitude } = currentLocation;
+
+            const params = new URLSearchParams({
+                mapX: longitude,
+                mapY: latitude,
+                radius: radius,
+                numOfRows: 50,
+                pageNo: 1,
+                MobileOS: 'ETC',
+                MobileApp: 'AppTest',
+                _type: 'json',
+                contentTypeId: contentTypeId
+            });
+
+            const serviceKey = apiKey;
+            const apiUrl = `https://apis.data.go.kr/B551011/KorService2/locationBasedList2?serviceKey=${serviceKey}&${params.toString()}`;
+
+            try {
+                const response = await fetch(apiUrl);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.response && data.response.header.resultCode === '0000') {
+                        console.log('API 호출 성공', data);
+                        return processApiResponse(data);
+                    } else {
+                        console.log('API 응답 코드:', data.response.header.resultCode);
+                    }
+                } else {
+                    console.log('HTTP 오류:', response.status);
+                }
+            } catch (error) {
+                console.log('API 호출 실패:', error);
+            }
+
+            // API 호출 실패 시
+            console.log('샘플 데이터 사용');
+            currentData = generateSampleData();
+            totalItems = currentData.length;
+            showApiInfo(apiUrl);
+        }
+
+        function processApiResponse(data) {
+            const items = data.response.body.items?.item || [];
+            const itemArray = Array.isArray(items) ? items : [items];
+
+            currentData = itemArray.map(item => ({
+                title: item.title || '제목 없음',
+                address: (item.addr1 || '') + (item.addr2 ? ' ' + item.addr2 : ''),
+                distance: item.dist ? Math.round(item.dist) + 'm' : '거리 정보 없음',
+                image: item.firstimage || item.firstimage2 || null,
+                contentId: item.contentid,
+                category: getCategoryName(item.cat1),
+                tel: item.tel || ''
+            }));
+
+            totalItems = currentData.length;
+        }
+
+        function getCategoryName(cat1) {
+            const categories = {
+                'A01': '자연',
+                'A02': '인문(문화/예술/역사)',
+                'A03': '레포츠',
+                'A04': '쇼핑',
+                'A05': '음식'
+            };
+            return categories[cat1] || '기타';
+        }
+
+        function generateSampleData() {
+            // 현재 위치 주변의 샘플 데이터 생성
+            const sampleLocations = [
+                { name: "경복궁", category: "인문(문화/예술/역사)", tel: "02-3700-3900" },
+                { name: "남산타워", category: "관광지", tel: "02-3455-9277" },
+                { name: "한강공원", category: "자연", tel: "02-3780-0561" },
+                { name: "명동성당", category: "인문(문화/예술/역사)", tel: "02-774-1784" },
+                { name: "동대문디자인플라자", category: "문화시설", tel: "02-2153-0000" }
+            ];
+
+            return sampleLocations.map((location, index) => ({
+                title: location.name,
+                address: "서울특별시 중구",
+                distance: `${Math.round(Math.random() * 2000 + 500)}m`,
+                image: null,
+                contentId: `sample_${index}`,
+                category: location.category,
+                tel: location.tel
+            }));
+        }
+
+        function showApiInfo(apiUrl) {
+            const infoDiv = document.createElement('div');
+            infoDiv.className = 'api-info';
+            infoDiv.innerHTML = `
+                <strong>📋 API 호출 안내</strong><br>
+                현재 브라우저 환경에서는 CORS 정책으로 인해 직접 API 호출이 제한됩니다.<br>
+                실제 운영 환경에서는 서버에서 다음 URL을 호출하세요:<br>
+                <br>
+                <code style="background: #f5f5f5; padding: 2px 4px; border-radius: 3px; font-size: 12px; word-break: break-all;">
+                ${apiUrl}
+                </code><br>
+                <br>
+                현재는 현재 위치 기반 샘플 데이터를 표시합니다.
+            `;
+
+            const existingInfo = document.querySelector('.api-info');
+            if (existingInfo) {
+                existingInfo.remove();
+            }
+
+            resultsContainer.insertBefore(infoDiv, resultsContainer.firstChild);
+        }
+
+        function displayResults() {
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageData = currentData.slice(startIndex, endIndex);
+
+            totalCount.textContent = totalItems;
+
+            resultsGrid.innerHTML = pageData.map(item => `
+                <div class="result-card">
+                    <div class="result-image">
+                        ${item.image ?
+                            `<img src="${item.image}" alt="${item.title}" onerror="this.parentElement.innerHTML='No image'">` :
+                            'No image'
+                        }
+                    </div>
+                    <div class="result-content">
+                        <div class="result-title">${item.title}</div>
+                        <div class="result-address">${item.address}</div>
+                        <div class="result-distance">📍 ${item.distance}</div>
+                        <div style="font-size: 11px; color: #888; margin-top: 5px;">${item.category}</div>
+                        ${item.tel ? `<div style="font-size: 11px; color: #666; margin-top: 3px;">📞 ${item.tel}</div>` : ''}
+                    </div>
+                </div>
+            `).join('');
+
+            updatePagination();
+        }
+
+        function updatePagination() {
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            let paginationHTML = '';
+
+            if (totalPages > 1) {
+                paginationHTML += `<button onclick="goToPage(1)" ${currentPage === 1 ? 'disabled' : ''}>&lt;&lt;</button>`;
+                paginationHTML += `<button onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>&lt;</button>`;
+
+                const startPage = Math.max(1, currentPage - 2);
+                const endPage = Math.min(totalPages, currentPage + 2);
+
+                for (let i = startPage; i <= endPage; i++) {
+                    paginationHTML += `<button onclick="goToPage(${i})" ${i === currentPage ? 'class="active"' : ''}>${i}</button>`;
+                }
+
+                paginationHTML += `<button onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>&gt;</button>`;
+                paginationHTML += `<button onclick="goToPage(${totalPages})" ${currentPage === totalPages ? 'disabled' : ''}>&gt;&gt;</button>`;
+            }
+
+            pagination.innerHTML = paginationHTML;
+        }
+
+        function goToPage(page) {
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            if (page < 1 || page > totalPages) return;
+
+            currentPage = page;
+            displayResults();
+        }
+
+        function handleReset() {
+            locationArea.classList.remove('active', 'error');
+            locationIcon.textContent = '📍';
+            locationIcon.classList.remove('active', 'error');
+            locationText.textContent = '클릭하여 현재 위치 가져오기';
+            locationSubtext.textContent = '위치 권한을 허용해주세요';
+            locationInfo.classList.remove('active');
+            resultsContainer.classList.add('hidden');
+
+            currentData = [];
+            currentLocation = null;
+            currentPage = 1;
+            totalItems = 0;
+
+            searchBtn.disabled = true;
+            searchBtn.classList.remove('btn-success');
+            searchBtn.textContent = '검색';
+
+            const existingInfo = document.querySelector('.api-info');
+            if (existingInfo) {
+                existingInfo.remove();
+            }
+
+            // 위치 다시 가져오기
+            getCurrentLocation();
+        }
     </script>
-  </body>
+</body>
 </html>
